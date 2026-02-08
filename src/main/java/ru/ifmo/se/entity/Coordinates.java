@@ -1,9 +1,12 @@
 package ru.ifmo.se.entity;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.ifmo.se.validator.ValidatorMessages;
 
 import java.util.Objects;
 
@@ -13,7 +16,10 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Coordinates {
 
+    @NotNull(message = ValidatorMessages.X_COORD_MUST_BE_NOT_NULL)
+    @Min(value = -482, message = ValidatorMessages.X_COORD_MUST_BE_MORE_MIN)
     private Integer x;
+
     private long y;
 
     @Override

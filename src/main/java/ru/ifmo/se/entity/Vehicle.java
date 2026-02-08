@@ -1,10 +1,14 @@
 package ru.ifmo.se.entity;
 
 //import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.ifmo.se.validator.ValidatorMessages;
 
 import java.util.Date;
 import java.util.Objects;
@@ -15,17 +19,33 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Vehicle implements Comparable<Vehicle> {
 
+    @Min(value = 1L, message = ValidatorMessages.ID_MUST_BE_MORE_ZERO)
     private long id;
+
+    @NotBlank(message = ValidatorMessages.NAME_MUST_BE_NON_BLANK)
     private String name;
+
+    @NotNull(message = ValidatorMessages.COORDS_MUST_BE_NOT_NULL)
     private Coordinates coordinates;
+
 //    @JsonFormat(shape = JsonFormat.Shape.STRING,
 //            pattern = "dd-MM-yyyy HH:mm:ss",
 //            timezone = "Europe/Moscow"
 //    )
+    @NotNull(message = ValidatorMessages.CREATE_DATE_MUST_BE_NOT_NULL)
     private Date creationDate;
+
+    @Min(value = 1L, message = ValidatorMessages.ENGINE_POWER_MUST_BE_MORE_ZERO)
     private double enginePower;
+
+    @NotNull(message = ValidatorMessages.DISTANCE_TRAVELLED_MUST_BE_NOT_NULL)
+    @Min(value = 1L, message = ValidatorMessages.DISTANCE_TRAVELLED_MUST_BE_MORE_ZERO)
     private Float distanceTravelled;
+
+    @NotNull(message = ValidatorMessages.VEHICLE_TYPE_MUST_BE_NOT_NULL)
     private VehicleType type;
+
+    @NotNull(message = ValidatorMessages.FUEL_TYPE_MUST_BE_NOT_NULL)
     private FuelType fuelType;
 
     @Getter

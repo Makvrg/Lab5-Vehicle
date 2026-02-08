@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.ifmo.se</groupId>
-    <artifactId>CityApplication</artifactId>
+    <artifactId>VehicleApplication</artifactId>
     <version>1.1</version>
 
     <properties>
@@ -79,6 +79,19 @@
             <version>${mockito.core.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
