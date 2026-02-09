@@ -28,10 +28,10 @@ public class ShowCommand extends Command {
 
     @Override
     public void execute(String[] ignoredArgs, Reader ignoredReader) {
-        Collection<Vehicle> cities = collectionService.show();
-        if (!cities.isEmpty()) {
-            printer.forcePrintln("Содержимые в коллекции объекты City:\n"
-                    + formatter.formatCityList(cities));
+        Collection<Vehicle> vehicles = collectionService.show();
+        if (!vehicles.isEmpty()) {
+            printer.forcePrintln("Содержимые в коллекции объекты Vehicle:\n"
+                    + formatter.formatVehicleCollection(vehicles));
         } else {
             printer.forcePrintln("Коллекция пуста");
         }

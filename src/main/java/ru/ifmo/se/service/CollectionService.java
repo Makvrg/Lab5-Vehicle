@@ -137,6 +137,10 @@ public class CollectionService {
                 .count();
     }
 
+    public int getCountElementsCollection() {
+        return collectionRepository.getCountOfElements();
+    }
+
     public void addShutdownListener(ShutdownListener listener) {
         listeners.add(listener);
     }

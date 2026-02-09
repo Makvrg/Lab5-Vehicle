@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class ParamTypedData {
 
-    private long id;
+    private Long id;
 }

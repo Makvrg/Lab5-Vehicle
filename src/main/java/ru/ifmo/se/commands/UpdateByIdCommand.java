@@ -6,17 +6,17 @@ import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.service.ParamTypedData;
 import ru.ifmo.se.typer.DataTyper;
-import ru.ifmo.se.validator.DataValidator;
+import ru.ifmo.se.validator.CommandValidatorProvider;
 
 public class UpdateByIdCommand extends AbstractAddCommand {
 
     public UpdateByIdCommand(CollectionService collectionService,
-                             DataValidator dataValidator,
+                             CommandValidatorProvider validatorProvider,
                              DataTyper dataTyper,
                              Printer printer) {
         super("update id {element}",
                 "обновить значение элемента коллекции, id которого равен заданному",
-                collectionService, dataValidator, dataTyper, printer
+                collectionService, validatorProvider, dataTyper, printer
         );
     }
 

@@ -6,16 +6,16 @@ import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.service.ParamTypedData;
 import ru.ifmo.se.typer.DataTyper;
-import ru.ifmo.se.validator.DataValidator;
+import ru.ifmo.se.validator.CommandValidatorProvider;
 
 public class AddCommand extends AbstractAddCommand {
 
     public AddCommand(CollectionService collectionService,
-                      DataValidator dataValidator,
+                      CommandValidatorProvider validatorProvider,
                       DataTyper dataTyper,
                       Printer printer) {
         super("add {element}", "добавить новый элемент в коллекцию",
-                collectionService, dataValidator, dataTyper, printer
+                collectionService, validatorProvider, dataTyper, printer
         );
     }
 

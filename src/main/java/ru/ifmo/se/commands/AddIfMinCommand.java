@@ -6,18 +6,18 @@ import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.service.ParamTypedData;
 import ru.ifmo.se.typer.DataTyper;
-import ru.ifmo.se.validator.DataValidator;
+import ru.ifmo.se.validator.CommandValidatorProvider;
 
 public class AddIfMinCommand extends AbstractAddCommand {
 
     public AddIfMinCommand(CollectionService collectionService,
-                           DataValidator dataValidator,
+                           CommandValidatorProvider validatorProvider,
                            DataTyper dataTyper,
                            Printer printer) {
         super("add_if_min {element}",
                 "добавить новый элемент в коллекцию, если его значение меньше, "
                         + "чем у наименьшего элемента этой коллекции",
-                collectionService, dataValidator, dataTyper, printer
+                collectionService, validatorProvider, dataTyper, printer
         );
     }
 

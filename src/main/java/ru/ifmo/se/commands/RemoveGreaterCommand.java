@@ -1,0 +1,49 @@
+package ru.ifmo.se.commands;
+
+import ru.ifmo.se.entity.Coordinates;
+import ru.ifmo.se.entity.Vehicle;
+import ru.ifmo.se.io.input.readers.Reader;
+import ru.ifmo.se.io.output.print.Printer;
+import ru.ifmo.se.service.CollectionService;
+import ru.ifmo.se.service.exceptions.RemoveByIdIllegalStateException;
+import ru.ifmo.se.validator.CommandValidatorProvider;
+import ru.ifmo.se.validator.exceptions.ExecuteScriptValidateException;
+
+public class RemoveGreaterCommand extends VehicleAwareCommand {
+
+    public RemoveGreaterCommand(CollectionService collectionService,
+                                CommandValidatorProvider validatorProvider,
+                                Printer printer) {
+        super("remove_greater {element}",
+                "удалить из коллекции все элементы, превышающие заданный",
+                collectionService, validatorProvider, printer);
+    }
+
+    @Override
+    public void execute(String[] ignoredArgs, Reader ignoredReader) {
+        vehicle = new Vehicle();
+        vehicle.setCoordinates(new Coordinates());
+        try {
+            readManage();
+        } catch (ExecuteScriptValidateException e) {
+            printer.forcePrintln(e.getMessage());
+            return;
+        }
+        try {
+
+            if (collectionService.removeGreater(vehicle)) {
+                printer.printlnIfOn(
+                        "Прошло успешное удаление");
+            } else {
+                printer.printlnIfOn(
+                        "Объекты для удаления не были найдены"
+                );
+            }
+        } catch (RemoveByIdIllegalStateException e) {
+            printer.printlnIfOn(
+                    "Объекты не были удалены, так как произошла ошибка во время работы: "
+                            + e.getMessage()
+            );
+        }
+    }
+}

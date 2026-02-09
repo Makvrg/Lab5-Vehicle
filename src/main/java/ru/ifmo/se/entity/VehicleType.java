@@ -3,6 +3,8 @@ package ru.ifmo.se.entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+
 @Getter
 @RequiredArgsConstructor
 public enum VehicleType {
@@ -24,6 +26,16 @@ public enum VehicleType {
             }
         }
         throw new IllegalArgumentException("Неизвестное значение: " + russianName);
+    }
+
+    public static boolean containsRussianString(String russianName) {
+        if (russianName == null) {
+            throw new IllegalArgumentException("Передано пустое значение");
+        }
+        return !Arrays.stream(VehicleType.values())
+                .map(VehicleType::getTitle)
+                .toList()
+                .contains(russianName);
     }
 
     @Override

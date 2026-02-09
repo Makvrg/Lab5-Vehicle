@@ -1,5 +1,6 @@
 package ru.ifmo.se.io.input;
 
+import jakarta.validation.ConstraintViolation;
 import ru.ifmo.se.entity.Vehicle;
 import ru.ifmo.se.event.ShutdownListener;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
@@ -20,12 +21,12 @@ import ru.ifmo.se.service.exceptions.CreationDateIsAfterNowException;
 import ru.ifmo.se.service.exceptions.NonUniqueIdException;
 import ru.ifmo.se.typer.DataTyper;
 import ru.ifmo.se.validator.CommandValidatorProvider;
-import ru.ifmo.se.validator.exceptions.InputFieldValidationException;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 
 public class CommandInput implements Runnable, ShutdownListener {
 
@@ -133,20 +134,20 @@ public class CommandInput implements Runnable, ShutdownListener {
             printer.forcePrintln("Не найдена переменная окружения с названием файла");
             return;
         }
-        try (InputStreamReader reader = dataProvider.open(fileName)) {
-            List<Vehicle> cities;
+        try (Scanner reader = dataProvider.open(fileName)) {
+            List<Vehicle> vehicles;
             try {
-                cities = initCitiesParser.parse(reader);
+                vehicles = initCitiesParser.parse(reader);
             } catch (JsonValidationException e) {
                 printer.forcePrintln("Произошла ошибка инициализации коллекции:");
                 printer.forcePrintln(e.getMessage());
                 return;
             }
 
-            if (checkCitiesFromFile(cities)) {
-                if (addAllCitiesFromFile(cities)) {
+            if (checkVehiclesFromFile(vehicles)) {
+                if (addAllVehiclesFromFile(vehicles)) {
                     printer.forcePrintln(
-                            "Инициализация коллекции объектами City из файла завершена успешно");
+                            "Инициализация коллекции объектами Vehicle из файла завершена успешно");
                 } else {
                     collectionService.clear();
                 }
@@ -154,55 +155,39 @@ public class CommandInput implements Runnable, ShutdownListener {
         }
     }
 
-    private boolean checkCitiesFromFile(List<Vehicle> cities) {
+    private boolean checkVehiclesFromFile(List<Vehicle> cities) {
         int counter = 1;
         for (Vehicle vehicle : cities) {
 
-            try {
-                validatorProvider.validateTypedIdInput(vehicle.getId());
-                validatorProvider.validateNameInput(vehicle.getName());
-                validatorProvider.validateTypedCreationDateInput(
-                        vehicle.getCreationDate());
-                validatorProvider.validateTypedXCoordInput(
-                        vehicle.getCoordinates().getX()
-                );
-                validatorProvider.validateTypedYCoordInput(
-                        vehicle.getCoordinates().getY()
-                );
-                validatorProvider.validateTypedAreaInput(vehicle.getArea());
-                validatorProvider.validateTypedPopulationInput(vehicle.getPopulation());
-                dataValidator.validateTypedMetersAboveSeaLevelInput(
-                        vehicle.getMetersAboveSeaLevel()
-                );
-                validatorProvider.validateTypedPopulationDensityInput(
-                        vehicle.getPopulationDensity()
-                );
-                validatorProvider.validateTypedGovernmentInput(vehicle.getGovernment());
-                validatorProvider.validateTypedHeightInput(
-                        vehicle.getGovernor().getHeight()
-                );
-            } catch (InputFieldValidationException e) {
+            Set<ConstraintViolation<Vehicle>> violations =
+                    validatorProvider.getBeanValidator().validate(vehicle);
+
+            if (!violations.isEmpty()) {
                 printer.forcePrintln(
-                        String.format(CollectionActionsMessages.CITY_INIT_VALID_EXC,
+                        String.format(CollectionActionsMessages.VEHICLE_INIT_VALID_EXC,
                                 vehicle.getId(), counter)
                 );
-                printer.forcePrintln("Выявленная в нём ошибка: " + e.getMessage());
+                printer.forcePrintln("Выявленные в нём ошибки: ");
+                for (ConstraintViolation<Vehicle> vio : violations) {
+                    printer.forcePrintln(vio.getMessage());
+                }
                 return false;
             }
+            counter++;
         }
         return true;
     }
 
-    private boolean addAllCitiesFromFile(List<Vehicle> cities) {
+    private boolean addAllVehiclesFromFile(List<Vehicle> cities) {
         int counter = 1;
         for (Vehicle vehicle : cities) {
             try {
-                if (collectionService.addInitCity(vehicle)) {
+                if (collectionService.addInitVehicle(vehicle)) {
                     counter++;
                 } else {
                     printer.forcePrintln(
                             String.format(
-                                    CollectionActionsMessages.CITY_INIT_UNKNOWN_EXC,
+                                    CollectionActionsMessages.VEHICLE_INIT_UNKNOWN_EXC,
                                     vehicle.getId(), counter
                             )
                     );
@@ -211,7 +196,7 @@ public class CommandInput implements Runnable, ShutdownListener {
             } catch (NonUniqueIdException | CreationDateIsAfterNowException e) {
                 printer.forcePrintln(
                         String.format(
-                                CollectionActionsMessages.CITY_INIT_ADD_EXC,
+                                CollectionActionsMessages.VEHICLE_INIT_ADD_EXC,
                                 vehicle.getId(),
                                 counter
                         )

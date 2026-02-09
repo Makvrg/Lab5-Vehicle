@@ -19,34 +19,70 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Vehicle implements Comparable<Vehicle> {
 
-    @Min(value = 1L, message = ValidatorMessages.ID_MUST_BE_MORE_ZERO)
+    @Min(
+            value = 1L,
+            message = ValidatorMessages.ID_MUST_BE_MORE_ZERO,
+            groups = ServiceInputField.class
+    )
     private long id;
 
-    @NotBlank(message = ValidatorMessages.NAME_MUST_BE_NON_BLANK)
+    @NotBlank(
+            message = ValidatorMessages.NAME_MUST_BE_NON_BLANK,
+            groups = UserInputField.class
+    )
     private String name;
 
-    @NotNull(message = ValidatorMessages.COORDS_MUST_BE_NOT_NULL)
+    @NotNull(
+            message = ValidatorMessages.COORDS_MUST_BE_NOT_NULL,
+            groups = UserInputField.class
+    )
     private Coordinates coordinates;
 
 //    @JsonFormat(shape = JsonFormat.Shape.STRING,
 //            pattern = "dd-MM-yyyy HH:mm:ss",
 //            timezone = "Europe/Moscow"
 //    )
-    @NotNull(message = ValidatorMessages.CREATE_DATE_MUST_BE_NOT_NULL)
+    @NotNull(
+            message = ValidatorMessages.CREATE_DATE_MUST_BE_NOT_NULL,
+            groups = ServiceInputField.class
+    )
     private Date creationDate;
 
-    @Min(value = 1L, message = ValidatorMessages.ENGINE_POWER_MUST_BE_MORE_ZERO)
+    @Min(
+            value = 1L,
+            message = ValidatorMessages.ENGINE_POWER_MUST_BE_MORE_ZERO,
+            groups = UserInputField.class
+    )
     private double enginePower;
 
-    @NotNull(message = ValidatorMessages.DISTANCE_TRAVELLED_MUST_BE_NOT_NULL)
-    @Min(value = 1L, message = ValidatorMessages.DISTANCE_TRAVELLED_MUST_BE_MORE_ZERO)
+    @NotNull(
+            message = ValidatorMessages.DISTANCE_TRAVELLED_MUST_BE_NOT_NULL,
+            groups = UserInputField.class
+    )
+    @Min(
+            value = 1L,
+            message = ValidatorMessages.DISTANCE_TRAVELLED_MUST_BE_MORE_ZERO,
+            groups = UserInputField.class
+    )
     private Float distanceTravelled;
 
-    @NotNull(message = ValidatorMessages.VEHICLE_TYPE_MUST_BE_NOT_NULL)
+    @NotNull(
+            message = ValidatorMessages.VEHICLE_TYPE_MUST_BE_NOT_NULL,
+            groups = UserInputField.class
+    )
     private VehicleType type;
 
-    @NotNull(message = ValidatorMessages.FUEL_TYPE_MUST_BE_NOT_NULL)
+    @NotNull(
+            message = ValidatorMessages.FUEL_TYPE_MUST_BE_NOT_NULL,
+            groups = UserInputField.class
+    )
     private FuelType fuelType;
+
+    public interface UserInputField {
+    }
+
+    public interface ServiceInputField {
+    }
 
     @Getter
     public enum FieldNames {
@@ -70,8 +106,8 @@ public class Vehicle implements Comparable<Vehicle> {
     @Override
     public int compareTo(Vehicle vehicle) {
         Double thisDigit = enginePower * distanceTravelled;
-        Double cityDigit = vehicle.enginePower * vehicle.distanceTravelled;
-        return thisDigit.compareTo(cityDigit);
+        Double vehicleDigit = vehicle.enginePower * vehicle.distanceTravelled;
+        return thisDigit.compareTo(vehicleDigit);
     }
 
     @Override
