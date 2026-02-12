@@ -4,6 +4,7 @@ import ru.ifmo.se.entity.Vehicle;
 import ru.ifmo.se.entity.Coordinates;
 import ru.ifmo.se.io.input.dto.ParamRawData;
 import ru.ifmo.se.io.input.readers.Reader;
+import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.service.ParamTypedData;
@@ -22,9 +23,10 @@ public abstract class AbstractAddCommand extends VehicleAwareCommand {
             CollectionService collectionService,
             CommandValidatorProvider validatorProvider,
             DataTyper dataTyper,
-            Printer printer) {
-        super(commandSignature, commandDescription,
-                collectionService, validatorProvider, printer);
+            Printer printer,
+            OutputStringFormatter formatter) {
+        super(commandSignature, commandDescription, collectionService,
+                validatorProvider, printer, formatter);
         this.dataTyper = dataTyper;
     }
 

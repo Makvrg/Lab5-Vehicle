@@ -8,6 +8,7 @@ import ru.ifmo.se.entity.VehicleType;
 import ru.ifmo.se.io.input.readers.InputTextHandler;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.file.FileReader;
+import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.validator.CommandValidatorProvider;
@@ -26,28 +27,31 @@ public abstract class VehicleAwareCommand extends Command {
     protected final CollectionService collectionService;
     protected final CommandValidatorProvider validatorProvider;
     protected final Printer printer;
+    private final OutputStringFormatter formatter;
     private final Map<String, Supplier<String>> readActions = buildMapOfReadActions();
     private boolean inputIsRepeated = false;
 
     protected Vehicle vehicle;
 
     private final Map<String, Consumer<String>> inputValidateMethods;
-    private final Map<String, Consumer<String>> dtoFieldSetters;
+    private final Map<String, Consumer<String>> vehicleFieldSetters;
 
     protected VehicleAwareCommand(
             String commandSignature,
             String commandDescription,
             CollectionService collectionService,
             CommandValidatorProvider validatorProvider,
-            Printer printer) {
+            Printer printer,
+            OutputStringFormatter formatter) {
         super(commandSignature, commandDescription);
         this.collectionService = collectionService;
         this.validatorProvider = validatorProvider;
         this.printer = printer;
+        this.formatter = formatter;
         vehicle = new Vehicle();
         vehicle.setCoordinates(new Coordinates());
         inputValidateMethods = buildMapOfInputTypeValidateMethods();
-        dtoFieldSetters = buildMapOfDtoFieldSetters();
+        vehicleFieldSetters = buildMapOfDtoFieldSetters();
     }
 
     protected void readManage() {
@@ -59,10 +63,11 @@ public abstract class VehicleAwareCommand extends Command {
                 try {
                     fieldMange(field, input);
                 } catch (InputFieldValidationException e) {
-                    printer.printlnIfOn(e.getMessage() + ", повторите ввод");
+                    printer.printlnIfOn("\n" + e.getMessage() + ", повторите ввод");
                     inputIsRepeated = true;
                     continue;
                 }
+                printer.printlnIfOn("");
                 inputIsRepeated = false;
                 break;
             }
@@ -70,25 +75,26 @@ public abstract class VehicleAwareCommand extends Command {
     }
 
     private void fieldMange(String field, String input) {
-        inputValidateMethods.get(field).accept(input);
+        Consumer<String> validateMethod = inputValidateMethods.get(field);
+        if (validateMethod != null) {
+            validateMethod.accept(input);
+        }
 
-        dtoFieldSetters.get(field).accept(input);
+        vehicleFieldSetters.get(field).accept(input);
 
         String fieldPath;
-        if (field.equals(Vehicle.FieldNames.X.getTitle()) &&
+        if (field.equals(Vehicle.FieldNames.X.getTitle()) ||
                 field.equals(Vehicle.FieldNames.Y.getTitle())) {
-            fieldPath = field;
-        } else {
             fieldPath = "coordinates." + field;
+        } else {
+            fieldPath = field;
         }
-        Set<ConstraintViolation<Object>> fieldViols =
+        Set<? extends ConstraintViolation<?>> fieldViols =
                 validatorProvider.getBeanValidator()
                         .validateProperty(vehicle, fieldPath);
         if (!fieldViols.isEmpty()) {
-            for (ConstraintViolation<Object> vio : fieldViols) {
-                printer.forcePrintln(vio.getMessage());
-                printer.forcePrintln("Повторите ввод");
-            }
+            throw new InputFieldValidationException(
+                    formatter.formatFieldViolations(fieldViols));
         }
     }
 
@@ -217,7 +223,10 @@ public abstract class VehicleAwareCommand extends Command {
 
         setters.put(Vehicle.FieldNames.NAME.getTitle(), name -> vehicle.setName(name));
         setters.put(Vehicle.FieldNames.X.getTitle(),
-                x -> vehicle.getCoordinates().setX(Integer.valueOf(x)));
+                x -> vehicle.getCoordinates().setX(
+                        (x != null) ? Integer.valueOf(x) : null
+                )
+        );
         setters.put(Vehicle.FieldNames.Y.getTitle(),
                 y -> vehicle.getCoordinates().setY(Long.parseLong(y)));
         setters.put(Vehicle.FieldNames.ENGINE_POWER.getTitle(),

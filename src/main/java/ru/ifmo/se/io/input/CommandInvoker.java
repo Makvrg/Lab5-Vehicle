@@ -5,8 +5,8 @@ import ru.ifmo.se.io.input.env.EnvironmentProvider;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
 import ru.ifmo.se.io.input.readers.file.DataProvider;
+import ru.ifmo.se.io.output.fileparser.VehicleCsvWriter;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
-import ru.ifmo.se.io.output.json.CityJsonWriter;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.typer.DataTyper;
@@ -35,7 +35,7 @@ public class CommandInvoker {
                           OutputStringFormatter formatter,
                           Printer printer,
                           EnvironmentProvider environmentProvider,
-                          CityJsonWriter fileWriter) {
+                          VehicleCsvWriter fileWriter) {
         this.dataProvider = dataProvider;
         this.readerFactory = readerFactory;
         this.commandInputReaders = readers;
@@ -70,7 +70,7 @@ public class CommandInvoker {
             DataTyper dataTyper,
             Printer printer,
             EnvironmentProvider environmentProvider,
-            CityJsonWriter fileWriter) {
+            VehicleCsvWriter fileWriter) {
         Map<String, Command> commands = new LinkedHashMap<>();
         Command currentCommand;
         Function<Command, String> getCommandName = 
@@ -92,13 +92,13 @@ public class CommandInvoker {
 
         currentCommand = new AddCommand(
                 collectionService, validatorProvider,
-                dataTyper, printer
+                dataTyper, printer, formatter
         );
         commands.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new UpdateByIdCommand(
                 collectionService, validatorProvider,
-                dataTyper, printer
+                dataTyper, printer, formatter
         );
         commands.put(getCommandName.apply(currentCommand), currentCommand);
 
@@ -126,17 +126,17 @@ public class CommandInvoker {
 
         currentCommand = new AddIfMinCommand(
                 collectionService, validatorProvider,
-                dataTyper, printer
+                dataTyper, printer, formatter
         );
         commands.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new RemoveGreaterCommand(
-                collectionService, validatorProvider, printer
+                collectionService, validatorProvider, printer, formatter
         );
         commands.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new RemoveLowerCommand(
-                collectionService, validatorProvider, printer
+                collectionService, validatorProvider, printer, formatter
         );
         commands.put(getCommandName.apply(currentCommand), currentCommand);
 

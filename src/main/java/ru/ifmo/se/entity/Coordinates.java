@@ -16,14 +16,10 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Coordinates {
 
-    @NotNull(
-            message = ValidatorMessages.X_COORD_MUST_BE_NOT_NULL,
-            groups = UserInputField.class
-    )
+    @NotNull(message = ValidatorMessages.X_COORD_MUST_BE_NOT_NULL)
     @Min(
             value = -481,
-            message = ValidatorMessages.X_COORD_MUST_BE_MORE_MIN,
-            groups = UserInputField.class
+            message = ValidatorMessages.X_COORD_MUST_BE_MORE_MIN
     )
     private Integer x;
 

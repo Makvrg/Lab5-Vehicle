@@ -25,12 +25,14 @@ public class ValidatorMessages {
 
     public static final String COORDS_MUST_BE_NOT_NULL =
             "Координаты не должны отсутствовать";
+    public static final String COORDS_MUST_BE_IN_FORMAT =
+            "Координаты должны быть в формате x:y";
     public static final String X_COORD_MUST_BE_NOT_NULL =
             "Координата x должна быть введена";
     public static final String X_COORD_MUST_BE_INTEGER =
             "Координата x должна быть целым числом";
     public static final String X_COORD_MUST_BE_MORE_MIN =
-            "Координата x должна быть больше %f";
+            "Координата x должна быть больше -482";
     public static final String Y_COORD_MUST_BE_INTEGER =
             "Координата y должна быть целым числом";
     public static final String Y_COORD_MUST_BE_NOT_EMPTY =

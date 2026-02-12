@@ -18,7 +18,7 @@ public class FileReader implements Reader {
     @Override
     public String readLine() throws IOException {
         if (scanner == null) {
-            scanner = dataProvider.open(fileName);
+            scanner = dataProvider.openScanner(fileName);
         }
         if (!scanner.hasNextLine()) {
             if (lastIsNewLine) {

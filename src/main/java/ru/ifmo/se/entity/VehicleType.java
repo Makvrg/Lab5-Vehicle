@@ -32,7 +32,7 @@ public enum VehicleType {
         if (russianName == null) {
             throw new IllegalArgumentException("Передано пустое значение");
         }
-        return !Arrays.stream(VehicleType.values())
+        return Arrays.stream(VehicleType.values())
                 .map(VehicleType::getTitle)
                 .toList()
                 .contains(russianName);

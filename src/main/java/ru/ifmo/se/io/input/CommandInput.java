@@ -4,16 +4,16 @@ import jakarta.validation.ConstraintViolation;
 import ru.ifmo.se.entity.Vehicle;
 import ru.ifmo.se.event.ShutdownListener;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
-import ru.ifmo.se.io.input.json.CityJsonParser;
-import ru.ifmo.se.io.input.json.JsonValidationException;
+import ru.ifmo.se.io.input.fileparser.CsvValidationException;
+import ru.ifmo.se.io.input.fileparser.VehicleCsvParser;
 import ru.ifmo.se.io.input.readers.InputTextHandler;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
 import ru.ifmo.se.io.input.readers.file.FileReader;
 import ru.ifmo.se.io.input.readers.file.DataProvider;
 import ru.ifmo.se.io.input.readers.terminal.TerminalReader;
+import ru.ifmo.se.io.output.fileparser.VehicleCsvWriter;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
-import ru.ifmo.se.io.output.json.CityJsonWriter;
 import ru.ifmo.se.io.output.print.CollectionActionsMessages;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
@@ -21,11 +21,12 @@ import ru.ifmo.se.service.exceptions.CreationDateIsAfterNowException;
 import ru.ifmo.se.service.exceptions.NonUniqueIdException;
 import ru.ifmo.se.typer.DataTyper;
 import ru.ifmo.se.validator.CommandValidatorProvider;
+import ru.ifmo.se.validator.exceptions.InputFieldValidationException;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 
 public class CommandInput implements Runnable, ShutdownListener {
@@ -37,7 +38,7 @@ public class CommandInput implements Runnable, ShutdownListener {
     private final OutputStringFormatter formatter;
     private final EnvironmentProvider environmentProvider;
     private final DataProvider dataProvider;
-    private final CityJsonParser initCitiesParser;
+    private final VehicleCsvParser initVehiclesParser;
     private final CommandInvoker commandInvoker;
     private boolean shutdown = false;
 
@@ -49,9 +50,9 @@ public class CommandInput implements Runnable, ShutdownListener {
                         DataTyper dataTyper,
                         OutputStringFormatter formatter,
                         EnvironmentProvider environmentProvider,
-                        CityJsonWriter fileWriter,
+                        VehicleCsvWriter fileWriter,
                         DataProvider dataProvider,
-                        CityJsonParser initCitiesParser) {
+                        VehicleCsvParser initVehiclesParser) {
         this.readers.add(reader);
         this.printer = printer;
         this.collectionService = collectionService;
@@ -59,7 +60,7 @@ public class CommandInput implements Runnable, ShutdownListener {
         this.formatter = formatter;
         this.environmentProvider = environmentProvider;
         this.dataProvider = dataProvider;
-        this.initCitiesParser = initCitiesParser;
+        this.initVehiclesParser = initVehiclesParser;
         this.commandInvoker =
                 new CommandInvoker(
                         dataProvider,
@@ -134,11 +135,11 @@ public class CommandInput implements Runnable, ShutdownListener {
             printer.forcePrintln("Не найдена переменная окружения с названием файла");
             return;
         }
-        try (Scanner reader = dataProvider.open(fileName)) {
+        try (InputStreamReader fileScanner = dataProvider.openStreamReader(fileName)) {
             List<Vehicle> vehicles;
             try {
-                vehicles = initCitiesParser.parse(reader);
-            } catch (JsonValidationException e) {
+                vehicles = initVehiclesParser.parse(fileScanner);
+            } catch (CsvValidationException e) {
                 printer.forcePrintln("Произошла ошибка инициализации коллекции:");
                 printer.forcePrintln(e.getMessage());
                 return;
@@ -155,9 +156,9 @@ public class CommandInput implements Runnable, ShutdownListener {
         }
     }
 
-    private boolean checkVehiclesFromFile(List<Vehicle> cities) {
+    private boolean checkVehiclesFromFile(List<Vehicle> vehicles) {
         int counter = 1;
-        for (Vehicle vehicle : cities) {
+        for (Vehicle vehicle : vehicles) {
 
             Set<ConstraintViolation<Vehicle>> violations =
                     validatorProvider.getBeanValidator().validate(vehicle);
@@ -165,22 +166,35 @@ public class CommandInput implements Runnable, ShutdownListener {
             if (!violations.isEmpty()) {
                 printer.forcePrintln(
                         String.format(CollectionActionsMessages.VEHICLE_INIT_VALID_EXC,
-                                vehicle.getId(), counter)
+                                vehicle.getId(), counter + 1)
                 );
                 printer.forcePrintln("Выявленные в нём ошибки: ");
-                for (ConstraintViolation<Vehicle> vio : violations) {
-                    printer.forcePrintln(vio.getMessage());
-                }
+                printer.forcePrintln(formatter.formatFieldViolations(violations));
                 return false;
             }
+
+            try {
+                validatorProvider.getDataValidator()
+                        .validateTypedEnginePower(vehicle.getEnginePower());
+                validatorProvider.getDataValidator()
+                        .validateTypedDistanceTravelled(vehicle.getDistanceTravelled());
+            } catch (InputFieldValidationException e) {
+                printer.forcePrintln(
+                        String.format(CollectionActionsMessages.VEHICLE_INIT_VALID_EXC,
+                                vehicle.getId(), counter + 1)
+                );
+                printer.forcePrintln("Выявленная в нём ошибка: " + e.getMessage());
+                return false;
+            }
+
             counter++;
         }
         return true;
     }
 
-    private boolean addAllVehiclesFromFile(List<Vehicle> cities) {
+    private boolean addAllVehiclesFromFile(List<Vehicle> vehicles) {
         int counter = 1;
-        for (Vehicle vehicle : cities) {
+        for (Vehicle vehicle : vehicles) {
             try {
                 if (collectionService.addInitVehicle(vehicle)) {
                     counter++;
@@ -188,7 +202,7 @@ public class CommandInput implements Runnable, ShutdownListener {
                     printer.forcePrintln(
                             String.format(
                                     CollectionActionsMessages.VEHICLE_INIT_UNKNOWN_EXC,
-                                    vehicle.getId(), counter
+                                    vehicle.getId(), counter + 1
                             )
                     );
                     return false;
@@ -198,7 +212,7 @@ public class CommandInput implements Runnable, ShutdownListener {
                         String.format(
                                 CollectionActionsMessages.VEHICLE_INIT_ADD_EXC,
                                 vehicle.getId(),
-                                counter
+                                counter + 1
                         )
                 );
                 printer.forcePrintln("Ошибка добавления в коллекцию: " + e.getMessage());

@@ -6,13 +6,13 @@ import ru.ifmo.se.entity.Vehicle;
 import ru.ifmo.se.io.input.CommandInput;
 import ru.ifmo.se.io.input.env.EnvVariableProvider;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
-import ru.ifmo.se.io.input.json.CityJsonParser;
+import ru.ifmo.se.io.input.fileparser.VehicleCsvParser;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
 import ru.ifmo.se.io.input.readers.file.FileProvider;
 import ru.ifmo.se.io.input.readers.file.DataProvider;
+import ru.ifmo.se.io.output.fileparser.VehicleCsvWriter;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
-import ru.ifmo.se.io.output.json.CityJsonWriter;
 import ru.ifmo.se.io.output.print.OutputPrinter;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.repository.CollectionRepository;
@@ -41,6 +41,8 @@ public final class AppCompositionRoot {
     @Getter
     private final Printer printer = new OutputPrinter();
 
+    private final OutputStringFormatter formatter = new OutputStringFormatter();
+
     private final ReaderFactory readerFactory = new ReaderFactory();
     private final Reader reader =
             readerFactory.createTerminalReader("Main Terminal");
@@ -50,17 +52,16 @@ public final class AppCompositionRoot {
 
     private final EnvironmentProvider environmentProvider =
             new EnvVariableProvider(ENV_VAR_NAME);
-    private final CityJsonWriter jsonWriter =
-            new CityJsonWriter(BACKUP_FILE_NAME);
+    private final VehicleCsvWriter fileWriter =
+            new VehicleCsvWriter(BACKUP_FILE_NAME);
     private final DataProvider dataProvider =
             new FileProvider();
-    private final CityJsonParser jsonParser =
-            new CityJsonParser();
+    private final VehicleCsvParser jsonParser =
+            new VehicleCsvParser(formatter);
 
     private final CollectionRepository collectionRepository =
             new CollectionRepository(collectionWithInfo);
 
-    private final OutputStringFormatter formatter = new OutputStringFormatter();
     @Getter
     private final CollectionService collectionService =
             new CollectionService(collectionRepository, formatter);
@@ -75,7 +76,7 @@ public final class AppCompositionRoot {
             dataTyper,
             formatter,
             environmentProvider,
-            jsonWriter,
+            fileWriter,
             dataProvider,
             jsonParser
     );

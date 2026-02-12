@@ -8,17 +8,17 @@ public class CollectionActionsMessages {
     public static final String VEHICLE_INIT_VALID_EXC = """
             При инициализации коллекции данными из файла
             произошла ошибка валидации объекта Vehicle с id: %d
-            и порядковым номером: %d
+            и находящимся в строке: %d
             """;
     public static final String VEHICLE_INIT_UNKNOWN_EXC = """
             При инициализации коллекции данными из файла
             по неизвестной причине не удалось добавить в коллекцию объект Vehicle с id: %d
-            и порядковым номером: %d
+            и находящимся в строке: %d
             """;
     public static final String VEHICLE_INIT_ADD_EXC = """
             При инициализации коллекции данными из файла
             произошла ошибка добавления объекта Vehicle с id: %d
-            и порядковым номером: %d
+            и находящимся в строке: %d
             """;
     public static final String VEHICLE_INIT_OPEN_FILE_EXC =
             "Произошла ошибка открытия файла при инициализации коллекции: ";

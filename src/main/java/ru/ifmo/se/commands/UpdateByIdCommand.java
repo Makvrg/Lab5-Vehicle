@@ -2,6 +2,7 @@ package ru.ifmo.se.commands;
 
 import ru.ifmo.se.entity.Vehicle;
 import ru.ifmo.se.io.input.dto.ParamRawData;
+import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.service.ParamTypedData;
@@ -13,10 +14,11 @@ public class UpdateByIdCommand extends AbstractAddCommand {
     public UpdateByIdCommand(CollectionService collectionService,
                              CommandValidatorProvider validatorProvider,
                              DataTyper dataTyper,
-                             Printer printer) {
+                             Printer printer, OutputStringFormatter formatter) {
         super("update id {element}",
                 "обновить значение элемента коллекции, id которого равен заданному",
-                collectionService, validatorProvider, dataTyper, printer
+                collectionService, validatorProvider,
+                dataTyper, printer, formatter
         );
     }
 

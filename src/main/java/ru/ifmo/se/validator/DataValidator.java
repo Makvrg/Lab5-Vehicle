@@ -7,9 +7,6 @@ import ru.ifmo.se.validator.exceptions.*;
 
 public class DataValidator {
 
-//    private static final Integer MIN_X_COORD = -482;
-//    private static final String DATE_PATTERN = "dd-MM-yyyy HH:mm:ss";
-
     public void validateXCoordType(String x) {
         if (x != null) {
             try {
@@ -56,13 +53,43 @@ public class DataValidator {
         }
     }
 
+    public void validateTypedEnginePower(double pow) {
+        if (Double.isNaN(pow)) {
+            throw new InputFieldValidationException(
+                    ValidatorMessages.ENGINE_POWER_MUST_BE_REAL_NUM);
+        }
+        if (Double.isInfinite(pow)) {
+            throw new InputFieldValidationException(
+                    ValidatorMessages.ABS_ENGINE_POWER_MUST_BE_LESS_MAX);
+        }
+    }
+
     public void validateDistanceTravelledType(String distanceTravelled) {
+        if (distanceTravelled == null) {
+            throw new InputFieldValidationException(
+                    ValidatorMessages.DISTANCE_TRAVELLED_MUST_BE_NOT_NULL);
+        }
         float dist;
         try {
             dist = Float.parseFloat(distanceTravelled);
         } catch (NumberFormatException e) {
             throw new InputFieldValidationException(
                     ValidatorMessages.DISTANCE_TRAVELLED_MUST_BE_REAL_NUM);
+        }
+        if (Float.isNaN(dist)) {
+            throw new InputFieldValidationException(
+                    ValidatorMessages.DISTANCE_TRAVELLED_MUST_BE_REAL_NUM);
+        }
+        if (Float.isInfinite(dist)) {
+            throw new InputFieldValidationException(
+                    ValidatorMessages.ABS_DISTANCE_TRAVELLED_MUST_BE_LESS_MAX);
+        }
+    }
+
+    public void validateTypedDistanceTravelled(Float dist) {
+        if (dist == null) {
+            throw new InputFieldValidationException(
+                    ValidatorMessages.DISTANCE_TRAVELLED_MUST_BE_NOT_NULL);
         }
         if (Float.isNaN(dist)) {
             throw new InputFieldValidationException(

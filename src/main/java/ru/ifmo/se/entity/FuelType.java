@@ -31,7 +31,7 @@ public enum FuelType {
         if (russianName == null) {
             throw new IllegalArgumentException("Передано пустое значение");
         }
-        return !Arrays.stream(FuelType.values())
+        return Arrays.stream(FuelType.values())
                 .map(FuelType::getTitle)
                 .toList()
                 .contains(russianName);

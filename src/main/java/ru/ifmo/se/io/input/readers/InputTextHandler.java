@@ -2,9 +2,6 @@ package ru.ifmo.se.io.input.readers;
 
 public class InputTextHandler {
 
-    private InputTextHandler() {
-    }
-
     public static String[] parseArguments(String line) {
         return line.strip().split("\\s+");
     }

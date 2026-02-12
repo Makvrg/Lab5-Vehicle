@@ -2,6 +2,7 @@ package ru.ifmo.se.commands;
 
 import ru.ifmo.se.entity.Vehicle;
 import ru.ifmo.se.io.input.dto.ParamRawData;
+import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.service.ParamTypedData;
@@ -13,11 +14,13 @@ public class AddIfMinCommand extends AbstractAddCommand {
     public AddIfMinCommand(CollectionService collectionService,
                            CommandValidatorProvider validatorProvider,
                            DataTyper dataTyper,
-                           Printer printer) {
+                           Printer printer,
+                           OutputStringFormatter formatter) {
         super("add_if_min {element}",
                 "добавить новый элемент в коллекцию, если его значение меньше, "
                         + "чем у наименьшего элемента этой коллекции",
-                collectionService, validatorProvider, dataTyper, printer
+                collectionService, validatorProvider,
+                dataTyper, printer, formatter
         );
     }
 
