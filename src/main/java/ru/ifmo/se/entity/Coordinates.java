@@ -25,9 +25,6 @@ public class Coordinates {
 
     private long y;
 
-    public interface UserInputField {
-    }
-
     @Override
     public String toString() {
         return String.format("Coordinates{x=%d, y=%d}", x, y);

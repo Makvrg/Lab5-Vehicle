@@ -13,6 +13,8 @@ public class ValidatorMessages {
             "Переданный аргумент id должен быть целым числом";
     public static final String PARAMETER_ID_NOT_PASSED =
             "Не передан параметр id";
+    public static final String PARAMETER_TYPE_NOT_PASSED =
+            "Не передан параметр type";
 
     public static final String NAME_MUST_BE_NON_BLANK =
             "Название транспорта не должно быть пустым";
@@ -65,45 +67,6 @@ public class ValidatorMessages {
             "Тип топлива должен быть указан";
     public static final String FUEL_TYPE_MUST_BE_IN_ENUM =
             "Тип топлива должен быть одним из предложенных";
-
-//    public static final String AREA_MUST_BE_MORE_ZERO =
-//            "Площадь города должна быть больше 0";
-//    public static final String AREA_MUST_BE_INTEGER =
-//            "Площадь города должна быть целым числом";
-//
-//    public static final String POPULATION_MUST_BE_MORE_ZERO =
-//            "Численность населения города должна быть больше 0";
-//    public static final String POPULATION_MUST_BE_INTEGER =
-//            "Численность населения города должна быть целым числом";
-//
-//    public static final String METERS_ABOVE_SEA_LEVEL_MUST_BE_REAL_NUM =
-//            "Число метров над уровнем моря должно быть вещественным числом";
-//    public static final String ABS_METERS_ABOVE_SEA_LEVEL_MUST_BE_LESS_MAX =
-//            "Число метров над уровнем моря не должно превышать максимум числа в памяти";
-//
-//    public static final String POPULATION_DENSITY_MUST_BE_MORE_ZERO =
-//            "Плотность населения города должна быть больше 0";
-//    public static final String POPULATION_DENSITY_MUST_BE_INTEGER =
-//            "Плотность населения города должна быть целым числом";
-//    public static final String PARAMETER_POPULATION_DENSITY_NOT_PASSED =
-//            "Не передан параметр populationDensity";
-//
-//    public static final String AGGLOMERATION_MUST_BE_INTEGER =
-//            "Численность населения агломерации города должна быть целым числом";
-//
-//    public static final String GOVERNMENT_MUST_BE_IN_ENUM =
-//            "Тип правления города должен быть одним из предложенных";
-//
-//    public static final String HEIGHT_MUST_BE_REAL_NUM =
-//            "Рост губернатора города должен быть вещественным числом в метрах";
-//    public static final String ABS_HEIGHT_MUST_BE_LESS_MAX =
-//            "Рост губернатора города не должен превышать максимум числа в памяти";
-//    public static final String HEIGHT_MUST_BE_MORE_ZERO =
-//            "Рост губернатора города должен быть больше 0";
-//
-//    public static final String BIRTHDAY_FORMAT_EXC =
-//            "Дата и время рождения губернатора города "
-//                    + "должны иметь формат дд-ММ-гггг ЧЧ:мм:сс";
 
     public static final String PARAMETER_FILE_NAME_NOT_PASSED =
             "Не введено название файла";

@@ -13,7 +13,6 @@ public class FileReader implements Reader {
     private final DataProvider dataProvider;
     private final String fileName;
     private Scanner scanner;
-    private boolean lastIsNewLine = false;
 
     @Override
     public String readLine() throws IOException {
@@ -21,18 +20,11 @@ public class FileReader implements Reader {
             scanner = dataProvider.openScanner(fileName);
         }
         if (!scanner.hasNextLine()) {
-            if (lastIsNewLine) {
-                lastIsNewLine = false;
-                return "";
-            } else {
-                scanner.close();
-                return null;
-            }
+            scanner.close();
+            return null;
         }
 
-        String line = scanner.nextLine();
-        lastIsNewLine = true;
-        return line;
+        return scanner.nextLine();
     }
 
     @Override

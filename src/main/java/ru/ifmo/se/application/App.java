@@ -5,7 +5,7 @@ public class App {
     private App() {
     }
 
-    public static void main(final String[] args) {
+    public static void main(String[] args) {
         Starter appStarter = new AppStarter();
         appStarter.start();
     }

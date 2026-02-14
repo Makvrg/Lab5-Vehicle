@@ -5,7 +5,7 @@ import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.validator.CommandValidatorProvider;
-import ru.ifmo.se.validator.exceptions.InputFieldValidationException;
+import ru.ifmo.se.validator.exceptions.CountLessThanTypeValidationException;
 
 public class CountLessThanTypeCommand extends Command {
 
@@ -27,7 +27,7 @@ public class CountLessThanTypeCommand extends Command {
     public void execute(String[] inputArgs, Reader ignoredReader) {
         String rusType = (inputArgs.length > 1) ? inputArgs[1] : null;
         try {
-            validatorProvider.getDataValidator().validateRusVehicleType(rusType);
+            validatorProvider.getDataValidator().validateCountLessType(rusType);
             if (collectionService.getCountElementsCollection() != 0) {
                 long countVeh = collectionService.countLessThanType(
                         VehicleType.fromRussianString(rusType));
@@ -35,7 +35,7 @@ public class CountLessThanTypeCommand extends Command {
             } else {
                 printer.forcePrintln("Коллекция пуста");
             }
-        } catch (InputFieldValidationException e) {
+        } catch (CountLessThanTypeValidationException e) {
             printer.printlnIfOn(e.getMessage());
         }
     }

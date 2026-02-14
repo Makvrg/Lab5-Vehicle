@@ -152,6 +152,18 @@ public class DataValidator {
         }
     }
 
+    public void validateCountLessType(String rusVehicleType) {
+        if (rusVehicleType == null) {
+            throw new CountLessThanTypeValidationException(
+                    ValidatorMessages.PARAMETER_TYPE_NOT_PASSED);
+        }
+        try {
+            validateRusVehicleType(rusVehicleType);
+        } catch (InputFieldValidationException e) {
+            throw new CountLessThanTypeValidationException(e.getMessage());
+        }
+    }
+
     public void validateExecuteScript(String fileName) {
         if (fileName == null) {
             throw new ExecuteScriptValidateException(

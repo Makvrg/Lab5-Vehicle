@@ -5,7 +5,6 @@ import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.service.exceptions.RemoveByIdIllegalStateException;
 import ru.ifmo.se.validator.CommandValidatorProvider;
-import ru.ifmo.se.validator.DataValidator;
 import ru.ifmo.se.validator.exceptions.RemoveByIdValidationException;
 
 public class RemoveByIdCommand extends Command {

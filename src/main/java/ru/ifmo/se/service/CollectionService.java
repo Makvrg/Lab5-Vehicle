@@ -60,6 +60,8 @@ public class CollectionService {
         Optional<Vehicle> minVehicle = collectionRepository.findMinVehicle();
         if (minVehicle.isPresent() && vehicle.compareTo(minVehicle.get()) < 0) {
             return add(vehicle);
+        } else if (minVehicle.isEmpty()) {
+            return add(vehicle);
         } else {
             return false;
         }

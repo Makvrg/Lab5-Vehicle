@@ -74,12 +74,6 @@ public class Vehicle implements Comparable<Vehicle> {
     @NotNull(message = ValidatorMessages.FUEL_TYPE_MUST_BE_NOT_NULL)
     private FuelType fuelType;
 
-    public interface UserInputField {
-    }
-
-    public interface ServiceInputField {
-    }
-
     @Getter
     public enum FieldNames {
         ID("id"),
