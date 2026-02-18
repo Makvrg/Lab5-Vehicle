@@ -17,7 +17,7 @@ public class VehicleCsvWriter implements FileWriter<Collection<Vehicle>> {
 
     private final String backupFileName;
 
-    private static final SimpleDateFormat DATE_FORMAT =
+    private final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     @Override
