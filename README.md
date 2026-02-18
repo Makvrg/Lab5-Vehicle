@@ -6,6 +6,6 @@
 
 Команда для создания переменной окружения `export VEHICLE_FILE=/home/studs/s501393/programming/VTLab5-Vehicle/collection_init.csv`
 
-Запуск приложения командой `java -jar VTLab5-1.0-SNAPSHOT.jar`
+Запуск приложения командой `java -jar VehicleApplication-1.1.jar`
 
 Все необходимые права выданы
