@@ -55,5 +55,5 @@ jobs:
         run: >
           mvn -B verify
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-          -Dsonar.projectKey=a1111
+          -Dsonar.projectKey=Lab5-Vehicle
           -Dsonar.qualitygate.wait=true
