@@ -1,16 +1,34 @@
 package ru.ifmo.se.io.output.print;
 
-public interface Printer {
+public class Printer {
 
-    void printlnIfOn(String inputLine);
+    private boolean onOff = true;
 
-    void printIfOn(String inputLine);
+    public void printlnIfOn(String inputLine) {
+        if (onOff) {
+            System.out.println(inputLine);
+        }
+    }
 
-    void forcePrintln(String inputLine);
+    public void printIfOn(String inputLine) {
+        if (onOff) {
+            System.out.print(inputLine);
+        }
+    }
 
-    void forcePrint(String inputLine);
+    public void forcePrintln(String inputLine) {
+        System.out.println(inputLine);
+    }
 
-    void on();
+    public void forcePrint(String inputLine) {
+        System.out.print(inputLine);
+    }
 
-    void off();
+    public void on() {
+        onOff = true;
+    }
+
+    public void off() {
+        onOff = false;
+    }
 }

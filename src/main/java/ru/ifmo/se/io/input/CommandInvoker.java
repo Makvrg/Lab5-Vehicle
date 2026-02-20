@@ -1,11 +1,12 @@
 package ru.ifmo.se.io.input;
 
 import ru.ifmo.se.commands.*;
-import ru.ifmo.se.io.input.env.EnvironmentProvider;
+import ru.ifmo.se.entity.Vehicle;
+import ru.ifmo.se.io.input.env.EnvVariableProvider;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
 import ru.ifmo.se.io.input.readers.file.DataProvider;
-import ru.ifmo.se.io.output.fileparser.VehicleCsvWriter;
+import ru.ifmo.se.io.output.fileparser.FileWriter;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
@@ -34,8 +35,8 @@ public class CommandInvoker {
                           List<Reader> readers,
                           OutputStringFormatter formatter,
                           Printer printer,
-                          EnvironmentProvider environmentProvider,
-                          VehicleCsvWriter fileWriter) {
+                          EnvVariableProvider environmentProvider,
+                          FileWriter<Vehicle> fileWriter) {
         this.dataProvider = dataProvider;
         this.readerFactory = readerFactory;
         this.commandInputReaders = readers;
@@ -69,8 +70,8 @@ public class CommandInvoker {
             CommandValidatorProvider validatorProvider,
             DataTyper dataTyper,
             Printer printer,
-            EnvironmentProvider environmentProvider,
-            VehicleCsvWriter fileWriter) {
+            EnvVariableProvider environmentProvider,
+            FileWriter<Vehicle> fileWriter) {
         Map<String, Command> commands = new LinkedHashMap<>();
         Command currentCommand;
         Function<Command, String> getCommandName = 

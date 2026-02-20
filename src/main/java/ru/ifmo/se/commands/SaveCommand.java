@@ -1,8 +1,9 @@
 package ru.ifmo.se.commands;
 
-import ru.ifmo.se.io.input.env.EnvironmentProvider;
+import ru.ifmo.se.entity.Vehicle;
+import ru.ifmo.se.io.input.env.EnvVariableProvider;
 import ru.ifmo.se.io.input.readers.Reader;
-import ru.ifmo.se.io.output.fileparser.VehicleCsvWriter;
+import ru.ifmo.se.io.output.fileparser.FileWriter;
 import ru.ifmo.se.io.output.print.CollectionActionsMessages;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
@@ -13,13 +14,13 @@ public class SaveCommand extends Command {
 
     private final CollectionService collectionService;
     private final Printer printer;
-    private final EnvironmentProvider environmentProvider;
-    private final VehicleCsvWriter fileWriter;
+    private final EnvVariableProvider environmentProvider;
+    private final FileWriter<Vehicle> fileWriter;
 
     public SaveCommand(CollectionService collectionService,
                        Printer printer,
-                       EnvironmentProvider environmentProvider,
-                       VehicleCsvWriter fileWriter) {
+                       EnvVariableProvider environmentProvider,
+                       FileWriter<Vehicle> fileWriter) {
         super("save", "сохранить коллекцию в файл");
         this.collectionService = collectionService;
         this.printer = printer;

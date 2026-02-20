@@ -33,7 +33,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>ru.ifmo.se.application.App</mainClass>
+                  <mainClass>ru.ifmo.se.App</mainClass>
                 </transformer>
               </transformers>
             </configuration>
@@ -54,7 +54,7 @@
           </filters>
           <transformers>
             <transformer>
-              <mainClass>ru.ifmo.se.application.App</mainClass>
+              <mainClass>ru.ifmo.se.App</mainClass>
             </transformer>
           </transformers>
         </configuration>

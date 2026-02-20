@@ -27,22 +27,21 @@ public class RemoveByIdCommand extends Command {
         String id = (inputArgs.length > 1) ? inputArgs[1] : null;
         try {
             validatorProvider.getDataValidator().validateRemoveById(id);
-            try {
-                if (collectionService.removeById(Long.parseLong(id))) {
-                    printer.printlnIfOn(
-                            "Объект Vehicle успешно удалён из коллекции по заданному id");
-                } else {
-                    printer.printlnIfOn(
-                            "Объект Vehicle с заданным id не найден в коллекции");
-                }
-            } catch (RemoveByIdIllegalStateException e) {
+
+            if (collectionService.removeById(Long.parseLong(id))) {
                 printer.printlnIfOn(
-                        "Объект не удалён, так как произошла ошибка во время работы: "
-                        + e.getMessage()
-                );
+                        "Объект Vehicle успешно удалён из коллекции по заданному id");
+            } else {
+                printer.printlnIfOn(
+                        "Объект Vehicle с заданным id не найден в коллекции");
             }
         } catch (RemoveByIdValidationException e) {
             printer.printlnIfOn(e.getMessage());
+        } catch (RemoveByIdIllegalStateException e) {
+            printer.printlnIfOn(
+                    "Объект не удалён, так как произошла ошибка во время работы: " +
+                            e.getMessage()
+            );
         }
     }
 }

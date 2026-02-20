@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @RequiredArgsConstructor
-public class VehicleCsvParser implements FileParser<List<Vehicle>> {
+public class VehicleCsvParser implements FileParser<Vehicle> {
 
     private final OutputStringFormatter formatter;
 

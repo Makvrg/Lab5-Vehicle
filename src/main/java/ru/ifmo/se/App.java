@@ -1,4 +1,6 @@
-package ru.ifmo.se.application;
+package ru.ifmo.se;
+
+import ru.ifmo.se.application.AppStarter;
 
 public class App {
 
@@ -6,7 +8,7 @@ public class App {
     }
 
     public static void main(String[] args) {
-        Starter appStarter = new AppStarter();
+        AppStarter appStarter = new AppStarter();
         appStarter.start();
     }
 }

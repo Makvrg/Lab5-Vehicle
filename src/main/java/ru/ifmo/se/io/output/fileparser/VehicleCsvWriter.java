@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class VehicleCsvWriter implements FileWriter<Collection<Vehicle>> {
+public class VehicleCsvWriter implements FileWriter<Vehicle> {
 
     private final String backupFileName;
 

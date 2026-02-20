@@ -3,16 +3,16 @@ package ru.ifmo.se.io.input;
 import jakarta.validation.ConstraintViolation;
 import ru.ifmo.se.entity.Vehicle;
 import ru.ifmo.se.event.ShutdownListener;
-import ru.ifmo.se.io.input.env.EnvironmentProvider;
+import ru.ifmo.se.io.input.env.EnvVariableProvider;
 import ru.ifmo.se.io.input.fileparser.CsvValidationException;
-import ru.ifmo.se.io.input.fileparser.VehicleCsvParser;
+import ru.ifmo.se.io.input.fileparser.FileParser;
 import ru.ifmo.se.io.input.readers.InputTextHandler;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
 import ru.ifmo.se.io.input.readers.file.FileReader;
 import ru.ifmo.se.io.input.readers.file.DataProvider;
 import ru.ifmo.se.io.input.readers.terminal.TerminalReader;
-import ru.ifmo.se.io.output.fileparser.VehicleCsvWriter;
+import ru.ifmo.se.io.output.fileparser.FileWriter;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.print.CollectionActionsMessages;
 import ru.ifmo.se.io.output.print.Printer;
@@ -36,9 +36,9 @@ public class CommandInput implements Runnable, ShutdownListener {
     private final CollectionService collectionService;
     private final CommandValidatorProvider validatorProvider;
     private final OutputStringFormatter formatter;
-    private final EnvironmentProvider environmentProvider;
+    private final EnvVariableProvider environmentProvider;
     private final DataProvider dataProvider;
-    private final VehicleCsvParser initVehiclesParser;
+    private final FileParser<Vehicle> initVehiclesParser;
     private final CommandInvoker commandInvoker;
     private boolean shutdown = false;
 
@@ -49,10 +49,10 @@ public class CommandInput implements Runnable, ShutdownListener {
                         CommandValidatorProvider validatorProvider,
                         DataTyper dataTyper,
                         OutputStringFormatter formatter,
-                        EnvironmentProvider environmentProvider,
-                        VehicleCsvWriter fileWriter,
+                        EnvVariableProvider environmentProvider,
+                        FileWriter<Vehicle> fileWriter,
                         DataProvider dataProvider,
-                        VehicleCsvParser initVehiclesParser) {
+                        FileParser<Vehicle> initVehiclesParser) {
         this.readers.add(reader);
         this.printer = printer;
         this.collectionService = collectionService;
@@ -86,13 +86,7 @@ public class CommandInput implements Runnable, ShutdownListener {
 
                 if (inputLine == null) {
                     if (currentReader instanceof FileReader) {
-                        readers.remove(readers.size() - 1);
-                        if (readers.size() == 1) {
-                            printer.on();
-                        }
-                        printer.forcePrintln(
-                                formatter.formatCurrentReaderInfo(List.copyOf(readers))
-                        );
+                        removeCurrentReader();
                         continue;
                     }
                     inputLine = "";
@@ -104,25 +98,35 @@ public class CommandInput implements Runnable, ShutdownListener {
                 );
                 commandInvoker.invokeCommand(inputArgs);
             } catch (IOException e) {
-                if (currentReader instanceof TerminalReader) {
-                    printer.forcePrintln(
-                            "При чтении с терминала произошла ошибка"
-                    );
-                }
-                if (currentReader instanceof FileReader) {
-                    printer.forcePrintln(
-                            "Файл с указанным названием не найден или к нему нет доступа"
-                    );
-                    readers.remove(readers.size() - 1);
-                    if (readers.size() == 1) {
-                        printer.on();
-                    }
-                    printer.forcePrintln(
-                            formatter.formatCurrentReaderInfo(List.copyOf(readers))
-                    );
-                }
+                handleReadException(currentReader);
             }
         }
+    }
+
+    private void handleReadException(Reader currentReader) {
+        if (currentReader instanceof TerminalReader) {
+            printer.forcePrintln(
+                    "При чтении с терминала произошла ошибка"
+            );
+        }
+        if (currentReader instanceof FileReader) {
+            printer.forcePrintln(
+                    "Файл с указанным названием не найден или к нему нет доступа"
+            );
+            removeCurrentReader();
+        }
+    }
+
+    private void removeCurrentReader() {
+        readers.remove(readers.size() - 1);
+
+        if (readers.size() == 1) {
+            printer.on();
+        }
+
+        printer.forcePrintln(
+                formatter.formatCurrentReaderInfo(List.copyOf(readers))
+        );
     }
 
     public void initialize() throws IOException {

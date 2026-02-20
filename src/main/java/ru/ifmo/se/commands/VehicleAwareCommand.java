@@ -57,19 +57,19 @@ public abstract class VehicleAwareCommand extends Command {
     protected void readManage() {
         printer.printlnIfOn("Следуя указаниям, введите данные объекта Vehicle");
         for (Map.Entry<String, Supplier<String>> actionEntry : readActions.entrySet()) {
-            while (true) {
+            boolean valid = false;
+            while (!valid) {
                 String field = actionEntry.getKey();
                 String input = actionEntry.getValue().get();
                 try {
                     fieldMange(field, input);
+                    printer.printlnIfOn("");
+                    inputIsRepeated = false;
+                    valid = true;
                 } catch (InputFieldValidationException e) {
                     printer.printlnIfOn("\n" + e.getMessage() + ", повторите ввод");
                     inputIsRepeated = true;
-                    continue;
                 }
-                printer.printlnIfOn("");
-                inputIsRepeated = false;
-                break;
             }
         }
     }
